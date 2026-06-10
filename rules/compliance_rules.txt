@@ -1,0 +1,28 @@
+# Compliance Rules for Financial / Insurance Documents
+# Format: RULE_ID: Rule description
+# Lines starting with # are comments and will be ignored
+
+# --- Coverage & Policy Terms ---
+RULE001: Document must explicitly state the coverage start and end date
+RULE002: Policy must include the full legal name of the insured party
+RULE003: Document must state the maximum liability or sum assured
+RULE004: Premium payment terms and due dates must be specified
+RULE005: Policy renewal terms must be clearly described
+
+# --- Disclosures & Exclusions ---
+RULE006: Document must disclose all exclusion clauses clearly
+RULE007: Any pre-existing condition clauses must be explicitly mentioned
+RULE008: Waiting period for claims must be stated if applicable
+
+# --- Legal & Authentication ---
+RULE009: Document must be signed or digitally authenticated by the issuing authority
+RULE010: Policy issuance date must be present
+RULE011: Unique policy or document reference number must be included
+
+# --- Grievance & Cancellation ---
+RULE012: Document must include a grievance redressal mechanism or contact information
+RULE013: Cancellation terms and notice period must be present and explicitly described
+RULE014: Refund or surrender value policy must be stated upon cancellation
+
+# --- Regulatory ---
+RULE015: Document must include the regulatory authority registration number of the insurer

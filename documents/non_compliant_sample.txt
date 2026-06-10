@@ -1,0 +1,19 @@
+This is a NON-COMPLIANT sample document for testing failure cases.
+
+INSURANCE CERTIFICATE
+======================
+
+Dear Customer,
+
+Please find enclosed your insurance certificate for the health plan you subscribed to.
+Your monthly premium is $500. Please pay on time.
+
+Coverage includes hospitalization and surgery. Some conditions may not be covered.
+Please read the fine print carefully.
+
+For questions, call our helpline.
+
+Thank you for choosing us.
+
+Regards,
+The Insurance Team

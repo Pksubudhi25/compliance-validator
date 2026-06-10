@@ -1,0 +1,74 @@
+This is a SAMPLE insurance policy document for testing the compliance validator.
+DO NOT use for real insurance purposes.
+
+POLICY DOCUMENT
+================
+
+Policy Reference Number: INS-2024-00987654
+Policy Issuance Date: January 15, 2024
+
+POLICYHOLDER INFORMATION
+-------------------------
+Full Legal Name: John Michael Doe
+Date of Birth: March 22, 1985
+Address: 123 Main Street, Springfield, IL 62701
+
+INSURER INFORMATION
+--------------------
+Insurer: SecureLife Insurance Co. Ltd.
+IRDAI Registration Number: IRDAI/HLT/2024/98765
+Contact / Grievance Officer: grievance@securelife.com | 1800-XXX-XXXX
+
+COVERAGE DETAILS
+-----------------
+Plan Name: ComprehensiveCare Health Plan
+Coverage Start Date: February 1, 2024
+Coverage End Date: January 31, 2025
+Sum Assured / Maximum Liability: USD 500,000
+
+PREMIUM DETAILS
+----------------
+Annual Premium: USD 12,000
+Payment Due Date: 1st of every month (for monthly installments)
+Payment Terms: Monthly installments of USD 1,000 due on the 1st of each month.
+Grace Period: 30 days after due date.
+
+WAITING PERIODS
+----------------
+Initial Waiting Period: 30 days from policy start date for all illnesses except accidents.
+Pre-existing Conditions Waiting Period: 48 months from policy inception.
+
+EXCLUSIONS
+-----------
+The following are NOT covered under this policy:
+1. Cosmetic or aesthetic treatments unless necessitated by an accident.
+2. Treatments arising from self-inflicted injuries.
+3. Experimental or unproven medical procedures.
+4. Dental treatments unless caused by accident.
+5. War, invasion, or acts of terrorism.
+
+RENEWAL TERMS
+--------------
+This policy is renewable annually. The insured must submit a renewal request at least
+30 days before the expiry date. Renewal premiums may be revised based on claims history.
+
+CANCELLATION TERMS
+-------------------
+The policyholder may cancel this policy by providing 30 days written notice to the insurer.
+Upon cancellation, a pro-rated refund of the unused premium will be issued within 15 business days.
+The insurer reserves the right to cancel the policy with 30 days notice if premiums remain unpaid
+beyond the grace period.
+
+GRIEVANCE REDRESSAL
+--------------------
+For any complaints or grievances, please contact:
+Grievance Officer, SecureLife Insurance Co. Ltd.
+Email: grievance@securelife.com
+Phone: 1800-XXX-XXXX (Toll-free, Mon-Fri 9am-6pm)
+Escalation: Insurance Ombudsman, as per IRDAI guidelines.
+
+AUTHENTICATION
+---------------
+This document has been digitally authenticated by SecureLife Insurance Co. Ltd.
+Digital Signature ID: DS-2024-SL-00987654
+Authorized Signatory: Jane Smith, Chief Underwriting Officer
