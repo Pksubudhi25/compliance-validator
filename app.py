@@ -83,12 +83,13 @@ if st.button("🚀 Run Validation", type="primary", disabled=not (doc_file and r
     # ── Summary metrics ───────────────────────────────────────────────────────
     s = report["summary"]
     st.subheader("📊 Summary")
-    m1, m2, m3, m4, m5 = st.columns(5)
+    m1, m2, m3, m4, m5, m6 = st.columns(6)
     m1.metric("Compliance Score", f"{s['compliance_score']:.1f}%")
-    m2.metric("Total Rules",      s["total_rules"])
-    m3.metric("✅ Passed",         s["passed"])
-    m4.metric("❌ Failed",         s["failed"])
-    m5.metric("❓ Unclear",        s["unclear"])
+    m2.metric("Risk Level",       s.get("risk_label", "Unknown"))
+    m3.metric("Total Rules",      s["total_rules"])
+    m4.metric("✅ Passed",         s["passed"])
+    m5.metric("❌ Failed",         s["failed"])
+    m6.metric("❓ Unclear",        s["unclear"])
 
     # ── Findings table ────────────────────────────────────────────────────────
     st.subheader("📋 Findings")
@@ -103,6 +104,7 @@ if st.button("🚀 Run Validation", type="primary", disabled=not (doc_file and r
             st.write(f"**Confidence:** {f['confidence']:.2f}")
             st.write(f"**Evidence:** {f.get('evidence', 'N/A')}")
             st.write(f"**Explanation:** {f.get('explanation', 'N/A')}")
+            st.write(f"**Recommendation:** {f.get('recommendation', 'N/A')}")
 
     # ── Download report ───────────────────────────────────────────────────────
     st.download_button(

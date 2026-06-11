@@ -10,10 +10,12 @@ Usage:
 import argparse
 import sys
 
+from openai import OpenAI
 from rich.console import Console
 
 import validator.agent as ag
-from validator.ingestion import load_document, load_rules, chunk_text
+import validator.ingestion as ing
+from validator.ingestion import load_and_chunk, load_rules
 from validator.vector_store import build_store
 from validator.agent import run_validation
 from validator.reporter import (
@@ -31,84 +33,52 @@ def parse_args():
         description="AI-Driven Audit & Compliance Validator (AMD Hackathon)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument(
-        "--doc",
-        required=True,
-        help="Path to the document to validate (PDF or .txt)",
-    )
-    parser.add_argument(
-        "--rules",
-        required=True,
-        help="Path to the compliance rules file (.txt)",
-    )
-    parser.add_argument(
-        "--model",
-        default="",
-        help="vLLM model name (e.g. 'meta-llama/Llama-3-8B-Instruct'). "
-             "Overrides the default in agent.py.",
-    )
-    parser.add_argument(
-        "--vllm-url",
-        default="",
-        help="vLLM server base URL (default: http://localhost:8000/v1)",
-    )
-    parser.add_argument(
-        "--out",
-        default="audit_report.json",
-        help="Output path for the JSON audit report (default: audit_report.json)",
-    )
-    parser.add_argument(
-        "--top-k",
-        type=int,
-        default=3,
-        help="Number of document chunks to retrieve per rule (default: 3)",
-    )
-    parser.add_argument(
-        "--chunk-size",
-        type=int,
-        default=500,
-        help="Token chunk size for document splitting (default: 500)",
-    )
-    parser.add_argument(
-        "--details",
-        action="store_true",
-        help="Print detailed evidence for each failed rule after the summary table",
-    )
+    parser.add_argument("--doc",       required=True, help="Path to document (PDF, TXT, HTML)")
+    parser.add_argument("--rules",     required=True, help="Path to compliance rules file (TXT)")
+    parser.add_argument("--model",     default="meta-llama/Llama-3-8B-Instruct",
+                        help="vLLM model name")
+    parser.add_argument("--vllm-url",  default="http://localhost:8000/v1",
+                        help="vLLM server base URL")
+    parser.add_argument("--out",       default="audit_report.json",
+                        help="Output JSON report path")
+    parser.add_argument("--top-k",     type=int, default=3,
+                        help="Chunks retrieved per rule (default: 3)")
+    parser.add_argument("--details",   action="store_true",
+                        help="Print detailed failure evidence after summary")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
 
-    # ── Apply CLI overrides ───────────────────────────────────────────────────
-    if args.model:
-        ag.MODEL = args.model
-        console.print(f"[dim]Model override: {ag.MODEL}[/dim]")
+    # ── Build shared vLLM client ──────────────────────────────────────────────
+    client = OpenAI(base_url=args.vllm_url, api_key="dummy")
+    model  = args.model
 
-    if args.vllm_url:
-        from openai import OpenAI
-        ag.client = OpenAI(base_url=args.vllm_url, api_key="dummy")
-        console.print(f"[dim]vLLM URL override: {args.vllm_url}[/dim]")
+    # Share client with both ingestion (normalisation) and agent (validation)
+    ing.init_llm(client, model)
+    ag.client = client
+    ag.MODEL   = model
 
     console.rule("[bold blue]AI Compliance Validator[/bold blue]")
+    console.print(f"[dim]Model : {model}[/dim]")
+    console.print(f"[dim]Server: {args.vllm_url}[/dim]")
 
-    # ── Step 1 — Load & chunk the document ───────────────────────────────────
-    console.print(f"\n[bold]📄 Loading document:[/bold] {args.doc}")
+    # ── Step 1 — AI-powered load + normalise + chunk ──────────────────────────
+    console.print(f"\n[bold]📄 Loading & normalising document:[/bold] {args.doc}")
     try:
-        doc_text = load_document(args.doc)
+        chunks = load_and_chunk(args.doc)
     except (FileNotFoundError, ValueError) as e:
         console.print(f"[red]ERROR:[/red] {e}")
         sys.exit(1)
+    console.print(f"   → {len(chunks)} semantic chunks (AI-generated)")
 
-    chunks = chunk_text(doc_text, chunk_size=args.chunk_size)
-    console.print(f"   → {len(chunks)} chunks created (chunk_size={args.chunk_size})")
-
-    # ── Step 2 — Build vector store ──────────────────────────────────────────
+    # ── Step 2 — Build vector store ───────────────────────────────────────────
     console.print("\n[bold]🗄  Building vector store...[/bold]")
     doc_collection = build_store(chunks)
-    console.print(f"   → ChromaDB in-memory collection ready ({doc_collection.count()} chunks)")
+    console.print(f"   → ChromaDB ready ({doc_collection.count()} chunks indexed)")
 
-    # ── Step 3 — Load rules ──────────────────────────────────────────────────
+    # ── Step 3 — Load rules (AI-assisted parsing) ─────────────────────────────
     console.print(f"\n[bold]📋 Loading rules:[/bold] {args.rules}")
     try:
         rules = load_rules(args.rules)
@@ -117,18 +87,16 @@ def main():
         sys.exit(1)
     console.print(f"   → {len(rules)} rules loaded")
 
-    # ── Step 4 — Run validation ──────────────────────────────────────────────
+    # ── Step 4 — Run validation ───────────────────────────────────────────────
     console.print(f"\n[bold]🤖 Running validation (top_k={args.top_k})...[/bold]")
     results = run_validation(rules, doc_collection, top_k=args.top_k)
 
-    # ── Step 5 — Generate & display report ───────────────────────────────────
+    # ── Step 5 — Report ───────────────────────────────────────────────────────
     console.print()
     report = generate_report(results, doc_name=args.doc)
     print_terminal_report(report)
-
     if args.details:
         print_failed_details(report)
-
     save_report(report, out_path=args.out)
     console.rule("[bold blue]Done[/bold blue]")
 
